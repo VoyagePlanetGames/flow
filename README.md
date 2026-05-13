@@ -1,99 +1,115 @@
-# Flow — Kanban Todo (Day 89)
+# Flow
 
-A glassmorphism-style Kanban board built in a single `index.html`. No backend, no build step — data persists in `localStorage`.
+**A Kanban board that gets out of your way.**
 
-## Features
+No signup. No cloud. No upsell. Open the link and start moving cards.
 
-- Three columns: **To Do / In Progress / Done**
-- Drag-and-drop between columns
-- Add / edit / delete tasks with title, description, priority
-- Priority chips (Low / Medium / High) with color-coded left border
-- Counter chips + stats strip
-- "Clear Done" bulk action
-- Keyboard shortcut: **N** to open new-task modal, **Esc** to close
-- Persists to `localStorage` — refresh-proof
-- Mobile responsive (stacks to single column under 900px)
-- Floating **Buy Me a Coffee** button
-
-## Run locally
-
-Just open `index.html` in your browser. That's it.
-
-```bash
-open index.html        # macOS
-```
+**Live:** https://voyageplanetgames.github.io/flow/
 
 ---
 
-## Part 1 — Set up real Buy Me a Coffee payments
+## What is Flow?
 
-The button currently points to `https://buymeacoffee.com/yourname`. To make it actually pay you:
+Flow is a single-page Kanban board for tracking your tasks. Three columns — **To Do**, **In Progress**, **Done** — and you drag cards between them as you make progress. That's it.
 
-### Step 1: Create your BMC account
-1. Go to **https://www.buymeacoffee.com/** → "Start my page".
-2. Sign up with email or Google.
-3. Pick a username — this becomes your URL: `buymeacoffee.com/<username>`. Choose carefully; it's hard to change.
-4. Fill out your page: profile photo, short bio, cover image. (BMC pages with a photo + bio convert ~3× better — same UX rule as App Store screenshots.)
-
-### Step 2: Connect a payout method
-- BMC supports **Stripe** (cards, Apple/Google Pay) and **PayPal**.
-- In dashboard → **Payments** → connect Stripe (recommended — lower fees, faster payout).
-- For Stripe you need: bank account, government ID, tax info. Takes ~10 min.
-- BMC takes **5%** + Stripe fees (~2.9% + 30¢). So a $5 coffee → you net ~$4.45.
-
-### Step 3: Wire the button in `index.html`
-Find this line near the bottom:
-```html
-<a class="bmc-fab" href="https://buymeacoffee.com/yourname" ...>
-```
-Replace `yourname` with your actual BMC username. Save. Done.
-
-### Step 4 (optional): Add the BMC widget instead of just a link
-BMC offers an embeddable widget that opens a modal on your site (no redirect). In your dashboard → **Widgets** → "Button" → copy the script tag and paste it inside `<head>`. It's ~5 lines.
-
-### Step 5: Test the payment flow
-- Use BMC's **test mode** (Stripe test cards: `4242 4242 4242 4242`) to verify a payment lands in your dashboard before going live.
+It's built for the moment you need a board *right now* and don't want to create an account, install an app, or invite a team. Open the URL, type a task, get back to work.
 
 ---
 
-## Part 2 — Host it on the web (free)
+## How to use it
 
-Pick one. GitHub Pages is the path of least resistance.
+### Add a task
 
-### Option A — GitHub Pages (Recommended)
+Click **+ New task** in the top right (or press `N` anywhere on the page).
 
-1. Create a free GitHub account if you don't have one.
-2. Create a new repo, e.g. `flow-kanban`. Make it **public**.
-3. Upload `index.html` (drag-drop in the GitHub web UI works).
-4. Repo → **Settings** → **Pages** → Source: `Deploy from branch` → Branch: `main` → `/ (root)` → **Save**.
-5. Wait ~30 sec. Your site is live at `https://<your-github-username>.github.io/flow-kanban/`.
+Fill in:
+- **Title** — what needs to be done. Required.
+- **Description** — extra context. Optional.
+- **Priority** — Low, Medium, or High. Shows up as a colored chip on the card.
+- **Status** — which column the card lands in (defaults to To Do).
 
-### Option B — Netlify (drag-and-drop deploy)
+Hit **Save**. The card appears in the column you picked.
 
-1. Sign up at **https://www.netlify.com/** (free tier).
-2. Dashboard → **Add new site** → **Deploy manually** → drag the folder containing `index.html` onto the page.
-3. Live in ~10 sec at `https://<random-name>.netlify.app`. You can rename the subdomain in site settings.
+### Move a task
 
-### Option C — Vercel
-Similar to Netlify. `npm i -g vercel` → run `vercel` in the folder → follow prompts.
+Just drag the card with your mouse and drop it on a different column. The card snaps into place and the count updates instantly. There's no save button — every action is auto-saved.
 
-### Bonus: Custom domain
-- Buy a domain ($10/yr — Namecheap, Cloudflare, Porkbun).
-- In GitHub Pages / Netlify, point the custom domain at your site (they walk you through the DNS records).
-- HTTPS is auto-issued via Let's Encrypt.
+### Edit a task
+
+Hover any card. The pencil icon appears in the top-right corner of the card. Click it to open the edit dialog. Change anything, hit Save.
+
+### Delete a task
+
+Hover the card. Click the trash icon next to the pencil. Confirm. Gone.
+
+### Clear all Done tasks
+
+When the Done column gets cluttered, click **Clear Done** in the top right. It nukes everything in the Done column at once (with a confirmation prompt). Use this at the end of a sprint, a day, or whenever the feeling of "I shipped a lot" needs to be reset to zero.
 
 ---
 
-## Files
+## Keyboard shortcuts
 
-- `index.html` — the entire app (HTML + CSS + JS in one file)
-- `D89_Reflection.md` — Obsidian reflection note
-- `README.md` — this file
+| Key | Action |
+|-----|--------|
+| `N` | Open the new-task dialog |
+| `Esc` | Close any open dialog |
+| `Enter` (in form) | Save the task |
 
-## What changes if you outgrow `localStorage`
+---
 
-`localStorage` is per-browser, per-device. If you want tasks to sync across your phone + laptop, you need a backend. Cheapest path:
-- **Supabase** (free tier, Postgres + auth out of the box) — swap the `save()` and `load()` functions to hit the Supabase JS SDK. ~50 lines of code total.
-- **Firebase Firestore** — same idea, Google ecosystem.
+## Where your data lives
 
-But for a personal portfolio piece + a tip jar, `localStorage` is plenty.
+Your tasks are stored in your browser's `localStorage`. This means:
+
+- **Private by default.** Nothing is sent to a server. There is no server. I can't see your tasks, and neither can anyone else.
+- **Per-device.** Your laptop and your phone each have their own board. They don't sync.
+- **Persistent across refreshes** — but **not across browsers**. If you switch from Chrome to Safari, your tasks won't come along. Same browser, same device — they stay.
+- **Cleared if you clear browser data.** If you wipe your browser's site data or use incognito mode, your tasks go with it.
+
+This is intentional. Flow is for personal lists, scratch boards, and "let me just sketch out my week" — not for a 50-person engineering team.
+
+---
+
+## Tips for getting the most out of it
+
+**Use it as a daily scratchboard.** Open it every morning, dump everything in your head into the To Do column, and work from it. Clear Done at end of day.
+
+**Use priority chips to triage.** When the To Do column has 15 cards, the High-priority ones jump out. Be ruthless — most tasks are Medium or Low.
+
+**Don't sleep on the description field.** A card titled "Fix the bug" is useless next week. A card titled "Fix the bug — when user clicks Save twice the row duplicates, see Slack thread" is a future-you gift.
+
+**Make a card for the thing you're avoiding.** The reason it's not done isn't time — it's that it's not on a list. Putting it on the board is half the battle.
+
+---
+
+## What Flow is not
+
+- A team collaboration tool (no shared boards, no comments, no @mentions)
+- A project management suite (no Gantt, no dependencies, no time tracking)
+- A note-taking app (Obsidian is better for that)
+- Cross-device synced (see "Where your data lives" above)
+
+If you need any of those, you probably want [Trello](https://trello.com), [Linear](https://linear.app), [Notion](https://notion.so), or [Jira](https://atlassian.com/software/jira) instead. They're great tools. Flow is the thing you reach for *before* those — when the overhead of setting them up costs more than the task is worth.
+
+---
+
+## Support
+
+Flow is free and always will be. If it saves you time and you feel like buying the maker a coffee, the button in the bottom-right corner goes to [buymeacoffee.com/chenbuilds](https://buymeacoffee.com/chenbuilds). No pressure.
+
+---
+
+## For developers
+
+Flow is one `index.html` file — HTML, CSS, and vanilla JavaScript, no build step, no framework, no dependencies. ~600 lines total.
+
+To run it locally: clone this repo and open `index.html` in your browser. That's the full install.
+
+To host your own copy: fork the repo, change the Buy Me a Coffee link in `index.html`, and enable GitHub Pages in the repo settings. Live in 60 seconds.
+
+The code is intentionally simple — every interaction goes through a single `render()` function that rebuilds the DOM from a `tasks[]` array. Mutations call `save()` (writes to localStorage) and then `render()`. That's the whole architecture.
+
+---
+
+Built on Day 89 of a 100-day coding challenge.
